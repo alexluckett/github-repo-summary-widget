@@ -37,6 +37,8 @@ The `repoList` directive takes in the list of repos, which would usually come fr
 If you change the location of the repo, you will need to modify the AngularJS GET request to reflect the PHP file's new location.
 
 ## Preview
+See [https://alexluckett.uk/](https://alexluckett.uk/) for live link.
+
 ![widget_preview](https://github.com/alexluckett/github-repo-summary-widget/raw/master/preview.png)
 
 ## Release History
