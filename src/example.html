@@ -17,7 +17,7 @@
         app.controller('controller-example', function($scope, $http) {
             $scope.repos = null;
             
-            $http.get("api/github-repos.php").then(function(response) {
+            $http.get("github-repos.php").then(function(response) {
                 $scope.repos = response.data["data"]["repositories"]; // get the repos from the API wrapper
             });
         });
