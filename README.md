@@ -39,6 +39,14 @@ If you change the location of the repo, you will need to modify the AngularJS GE
 ## Release History
 * 0.0.1
     * Initial version for AngularJS and PHP
+    
+## Acknowledgements
+* Gilbert Pellegrom's SimpleCache
+    * https://github.com/gilbitron/PHP-SimpleCache
+    * Used within github-repos.php to cache the API request (avoiding repeat calls for each of your website's visitors)
+* Glavić's time_elapsed_string function
+    * https://stackoverflow.com/questions/1416697/converting-timestamp-to-time-ago-in-php-e-g-1-day-ago-2-days-ago/18602474#18602474
+    * Used to convert timestamps into elapsed time in a human readable format
 
 ## Meta
 Alex Luckett – [@alexluckett](https://twitter.com/alexluckett)
