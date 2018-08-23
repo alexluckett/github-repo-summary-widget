@@ -1,0 +1,26 @@
+<div class="list-group">
+    <a href="{{repo.url}}" class="list-group-item list-group-item-action flex-column" ng-repeat="repo in repos">
+        <div class="d-flex w-100 justify-content-between">
+            <!-- Name of repo with starred icon if repo picked on GitHub -->
+            <h5 class="mb-1">
+                <span class="small fas fa-star" ng-if="repo.starred" aria-hidden="true" style="color: #edd240;">&nbsp;</span>{{repo.nameWithOwner}}
+            </h5>
+
+            <!-- Repo last modified date -->
+            <small>{{repo.last_modified_human}}</small>
+        </div>
+
+        <p class="mb-1">{{repo.description}}</p>
+            <!-- Primary programming language -->
+            <span class="badge badge-pill" style="color: white; background-color: {{repo.primaryLanguage.color}}">
+                <!-- <span class="{{get_icon(repo.primaryLanguage.name)}}" aria-hidden="true" style="color: white; "></span>-->
+                {{repo.primaryLanguage.name}}
+            </span>
+
+            <!-- Pills for each topic-->
+            <span class="small fas" ng-if="repo.repositoryTopics.nodes.length > 0" aria-hidden="true" style="color: #4d4d4d;">&nbsp;</span>
+        <span ng-repeat="node in repo.repositoryTopics.nodes">
+            <span class="badge badge-pill badge-primary">{{node.topic.name}}</span>
+        </span>
+    </a>
+</div>
