@@ -3,6 +3,8 @@
 
 Uses the GitHub GraphQL API to pull in the user's public repositories (max 10) and displays a Bootstrap widget of the top 10. Supports pinned repositories and normal repositories, ordering by pin status and then push date.
 
+The supplied PHP file will pull in all public repos associated with the user who owns the API token, supplied below.
+
 ## Installation
 Copy `src/github-repos.php` and `src/repo-list-directive.html` into your AngularJS/PHP project. Then configure your AnagularJS app as follows:
 
