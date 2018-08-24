@@ -4,37 +4,44 @@
 Uses the GitHub GraphQL API to pull in the user's public repositories (max 10) and displays a Bootstrap widget of the top 10. Supports pinned repositories and normal repositories, ordering by pin status and then push date.
 
 ## Installation
-Copy `src/github-repos.php` and `src/repo-list-directive.html` into your AngularJS/PHP project. Then configure your controller as follows
+Copy `src/github-repos.php` and `src/repo-list-directive.html` into your AngularJS/PHP project. Then configure your app as follows:
 
-```
-app.controller('controller-example', function($scope, $http) {
-    $scope.repos = null;
-
-    $http.get("github-repos.php").then(function(response) {
-        $scope.repos = response.data["data"]["repositories"]; // get the repos from the API wrapper
-    });
-});
-
+```javascript
 app.directive('repoList', function() {
     return {
         restrict: "E",
         scope: {
-            repos: '='
+            apiUrl: '@'
         },
-        templateUrl: 'repo-list-directive.html'  // template with content
-  }; 
+        templateUrl: 'path/to/repo-list-directive.html',
+        controller:function($scope, $http){
+            console.log("Directive controller called");
+
+            let api_url = $scope.apiUrl;
+
+            $scope.repos = null;
+
+            console.log("Calling API using URL: " + api_url);
+            $http.get(api_url).then(function(response) {
+                $scope.repos = response.data["data"]["repositories"];
+            }), function(result) {
+                console.log("Error calling API using URL: " + api_url + ". Result: ");
+                console.log(result)
+            };
+        }
+  };
 });
 ```
 
 Within your HTML, you can then use the directive as normal:
 
 ```
-<repo-list repos="repos"></repo-list>
+<repo-list api-url="path/to/github-repos.php"></repo-list> 
 ```
 
-The `repoList` directive takes in the list of repos, which would usually come from the API (see `$scope.repos` in the controller). You could provide a custom list if needed, which will work as long as it follows the same schema as the API's response (within `response["data"]["repositories"]`.
+The `repoList` directive takes an URL to the API to get the repository data. This directive supports the `github-repos.php` JSON API, but will work with any API as long as it returns data with the same schema (see the result of `github-repos.php`).
 
-If you change the location of the repo, you will need to modify the AngularJS GET request to reflect the PHP file's new location.
+If you change the location of the API (either by using the supplied one or your own), you will need to modify the `api-url` parameter. Also ensure to change the `templateUrl` setting in the above JS bject to the correct path.
 
 ## Preview
 See [https://alexluckett.uk/](https://alexluckett.uk/) for live link.
@@ -44,6 +51,8 @@ See [https://alexluckett.uk/](https://alexluckett.uk/) for live link.
 ## Release History
 * 0.0.1
     * Initial version for AngularJS and PHP
+* 0.0.2
+    * Moved widget logic into the directive, which now calls the API itself
     
 ## Acknowledgements
 * Gilbert Pellegrom's SimpleCache
