@@ -22,8 +22,6 @@
                 },
                 templateUrl: 'repo-list-directive.html',
                 controller:function($scope, $http){
-                    console.log("Directive controller called");
-                    
                     let api_url = $scope.apiUrl;
                     
                     $scope.repos = null;
@@ -31,9 +29,16 @@
                     console.log("Calling API using URL: " + api_url);
                     $http.get(api_url).then(function(response) {
                         $scope.repos = response.data["data"]["repositories"];
+                        
+                        if($scope.repos === undefined) {
+                            $scope.error_message = response.data["error"];
+                            $scope.repos = [];
+                        }
                     }), function(result) {
                         console.log("Error calling API using URL: " + api_url + ". Result: ");
-                        console.log(result)
+                        console.log(result);
+                        
+                        $scope.error_message = result;
                     };
                 }
           };
@@ -43,7 +48,7 @@
 </head>
 
 <body>
-	<div ng-app="github-repo-list-example" ng-app="github-repo-list-example" class="container">
+	<div ng-app="github-repo-list-example" class="container">
         <github-repo-list api-url="github-repos.php"></github-repo-list> 
     </div>
 </body>

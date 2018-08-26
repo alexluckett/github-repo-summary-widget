@@ -1,3 +1,7 @@
+<div class="alert alert-danger" role="alert" ng-if="error_message">
+    <strong>Unable to retrieve GitHub repositories.</strong> {{error_message}}.
+</div>
+
 <div class="list-group">
     <a href="{{repo.url}}" class="list-group-item list-group-item-action flex-column" ng-repeat="repo in repos">
         <div class="d-flex w-100 justify-content-between">

@@ -19,17 +19,20 @@ class SimpleCache {
 	public $cache_time = 36000; // alexluckett modification: 10 hours
 	// Cache file extension
 	public $cache_extension = '.cache';
+    public $ignore_ssl_host_verification = false;
     
-    public function __construct() {
+    public function __construct($ssl_verification = false) {
         if(!is_dir($this->cache_path)) { // alexluckett modification: create cache path if it doesn't exist
           mkdir($this->cache_path);
-        }        
+        }
+        
+        $this->ignore_ssl_host_verification = $ssl_verification;
     }
 
 	// This is just a functionality wrapper function
 	public function get_data($label, $url, $token, $query)
 	{
-		if($data = $this->get_cache($label)){
+        if($data = $this->get_cache($label)){
 			return $data;
 		} else {
 			$data = $this->do_curl($url, $token, $query);
@@ -68,6 +71,11 @@ class SimpleCache {
 		if(function_exists("curl_init")){
             $ch = curl_init();
             
+            if ($this->ignore_ssl_host_verification) { // alexluckett modification: used for local testing
+                curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+                curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+            }
+            
             // Alex Luckett modification: add API token to request
             curl_setopt($ch, CURLOPT_HTTPHEADER, array(
                 "Authorization: Bearer ".$token
@@ -82,6 +90,15 @@ class SimpleCache {
 			curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
             
 			$content = curl_exec($ch);
+            
+            if(!$content) {
+                $error_text = curl_error($ch);
+                
+                $content = '{ "error": "' . "$error_text" . '", "data": {} }';
+                
+                throw new Exception($content);
+            }
+            
 			curl_close($ch);
             
 			return $content;
@@ -97,8 +114,6 @@ class SimpleCache {
 	}
 }
 
-
-$cache = new SimpleCache();
 
 $json_string = <<<JSONSTRING
 {
@@ -209,17 +224,26 @@ function add_last_modified_human_readable(&$repos) {
 }
 
 
-$json_string = str_replace(array("\r\n", "\n", "\r"), ' ', $json_string); // clean up the JSON so GitHub will parse it 
-$temp = $cache->get_data("github-repo-list", "https://api.github.com/graphql", "API TOKEN HERE", $json_string);
-$temp_as_json = json_decode($temp, true)["data"]["viewer"];
+$json_string = str_replace(array("\r\n", "\n", "\r"), ' ', $json_string); // clean up the JSON so GitHub will parse it
 
-$other_repos = $temp_as_json["repositories"]["nodes"];
-$pinned_repos = $temp_as_json["pinnedRepositories"]["nodes"];
-$merged_repos = order_repos($pinned_repos, $other_repos); // merge both pinned and normal repos
+try {
+    $cache = new SimpleCache();
+    $temp = $cache->get_data("github-repo-list", "https://api.github.com/graphql", "API KEY HERE", $json_string);
+    
+    $json_data = json_decode($temp, true);
+    
+    $temp_as_json = $json_data["data"]["viewer"];
 
-add_last_modified_human_readable($merged_repos);
+    $other_repos = $temp_as_json["repositories"]["nodes"];
+    $pinned_repos = $temp_as_json["pinnedRepositories"]["nodes"];
+    $merged_repos = order_repos($pinned_repos, $other_repos); // merge both pinned and normal repos
 
-$response = array();
-$response["data"]["repositories"] = $merged_repos;
+    add_last_modified_human_readable($merged_repos);
 
-echo (json_encode($response));  // send data back to API client in JSON form
+    $response = array();
+    $response["data"]["repositories"] = $merged_repos;
+
+    echo (json_encode($response));  // send data back to API client in JSON form
+} catch(Exception $e) {
+    echo ($e->getMessage());
+}
