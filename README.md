@@ -8,33 +8,13 @@ The supplied PHP file will pull in all public repos associated with the user who
 ## Installation
 Copy `src/github-repos.php` and `src/repo-list-directive.html` into your AngularJS/PHP project. Then configure your AnagularJS app as follows:
 
-#### 1) Copy Javascript directive into your app
+#### 1) Copy the Javascript directive into your app
 ```javascript
 app.directive('githubRepoList', function() {
-    return {
-        restrict: "E",
-        scope: {
-            apiUrl: '@'
-        },
-        templateUrl: 'path/to/repo-list-directive.html',
-        controller:function($scope, $http){
-            console.log("Directive controller called");
-
-            let api_url = $scope.apiUrl;
-
-            $scope.repos = null;
-
-            console.log("Calling API using URL: " + api_url);
-            $http.get(api_url).then(function(response) {
-                $scope.repos = response.data["data"]["repositories"];
-            }), function(result) {
-                console.log("Error calling API using URL: " + api_url + ". Result: ");
-                console.log(result)
-            };
-        }
-  };
+    // rest of code here from example.html
 });
 ```
+The code follows the above format and can be found in example.html. Please copy the full block.
 Ensure to change the `templateUrl` setting in the above JS object to the correct path.
 
 #### 2) Within your HTML, instantiate the widget:
