@@ -211,7 +211,7 @@ function order_repos(&$pinned_repos, $other_repos) {
         }
     }
     
-    return $indexed;
+    return array_values($indexed);
 }
 
 // adds a human readable elapsed time to each repo
@@ -227,7 +227,7 @@ function add_last_modified_human_readable(&$repos) {
 $json_string = str_replace(array("\r\n", "\n", "\r"), ' ', $json_string); // clean up the JSON so GitHub will parse it
 
 try {
-    $cache = new SimpleCache();
+    $cache = new SimpleCache(true);
     $temp = $cache->get_data("github-repo-list", "https://api.github.com/graphql", "API KEY HERE", $json_string);
     
     $json_data = json_decode($temp, true);

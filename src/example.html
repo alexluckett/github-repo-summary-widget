@@ -18,15 +18,45 @@
             return {
                 restrict: "E",
                 scope: {
-                    apiUrl: '@'
+                    apiUrl: "@",
+                    listLength: "=?",
+                    scrollable: "=?"
                 },
                 templateUrl: 'repo-list-directive.html',
+                compile: function(element, attrs) {
+                    if(!attrs.scrollable) { attrs.scrollable = false; };
+                },
                 controller:function($scope, $http){
                     let api_url = $scope.apiUrl;
                     
                     $scope.repos = null;
+                    $scope.indexVisibleFrom = 0;
                     
                     console.log("Calling API using URL: " + api_url);
+                    
+                    $scope.refreshRepos = function() {
+                        if($scope.scrollable) {
+                            $scope.visibleRepos = $scope.repos.slice($scope.indexVisibleFrom, $scope.indexVisibleFrom + $scope.listLength);
+                        } else {
+                            $scope.visibleRepos = $scope.repos.slice(0, $scope.listLength);
+                        }
+                        
+                    };
+                    
+                    $scope.scrollUp = function() {
+                        if($scope.indexVisibleFrom > 0) {
+                            $scope.indexVisibleFrom--;
+                            $scope.refreshRepos();
+                        }
+                    };
+                    
+                    $scope.scrollDown = function() {
+                        if($scope.indexVisibleFrom + $scope.listLength < $scope.repos.length) {
+                            $scope.indexVisibleFrom++;
+                            $scope.refreshRepos();
+                        }
+                    };
+                    
                     $http.get(api_url).then(function(response) {
                         $scope.repos = response.data["data"]["repositories"];
                         
@@ -34,6 +64,8 @@
                             $scope.error_message = response.data["error"];
                             $scope.repos = [];
                         }
+                        
+                        $scope.refreshRepos();
                     }), function(result) {
                         console.log("Error calling API using URL: " + api_url + ". Result: ");
                         console.log(result);
@@ -49,7 +81,7 @@
 
 <body>
 	<div ng-app="github-repo-list-example" class="container">
-        <github-repo-list api-url="github-repos.php"></github-repo-list> 
+        <github-repo-list api-url="github-repos.php" scrollable="false" list-length="5"></github-repo-list> 
     </div>
 </body>
 </html>

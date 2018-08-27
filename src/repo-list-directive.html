@@ -3,7 +3,8 @@
 </div>
 
 <div class="list-group">
-    <a href="{{repo.url}}" class="list-group-item list-group-item-action flex-column" ng-repeat="repo in repos">
+    <a class="list-group-item list-group-item-action flex-column" ng-click="scrollUp()" ng-if="scrollable" style="text-align: center;"><i class="fas fa-arrow-up"></i></a>
+    <a href="{{repo.url}}" class="list-group-item list-group-item-action flex-column" ng-repeat="repo in visibleRepos">
         <div class="d-flex w-100 justify-content-between">
             <!-- Name of repo with starred icon if repo picked on GitHub -->
             <h5 class="mb-1">
@@ -27,4 +28,5 @@
             <span class="badge badge-pill badge-primary">{{node.topic.name}}</span>
         </span>
     </a>
+    <a class="list-group-item list-group-item-action flex-column" ng-click="scrollDown()" ng-if="scrollable" style="text-align: center;"><i class="fas fa-arrow-down"></i></a>
 </div>
