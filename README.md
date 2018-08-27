@@ -8,7 +8,7 @@ The supplied PHP file will pull in all public repos associated with the user who
 ## Installation
 Copy `src/github-repos.php` and `src/repo-list-directive.html` into your AngularJS/PHP project. Then configure your AnagularJS app as follows:
 
-#### 1) Copy the Javascript directive into your app
+#### 1) Copy the Javascript directive into your app (source in example.html)
 ```javascript
 app.directive('githubRepoList', function() {
     // rest of code here from example.html
