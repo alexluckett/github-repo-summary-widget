@@ -45,6 +45,13 @@ The `githubRepoList` directive takes an URL to the API to get the repository dat
 
 If you change the location of the API (either by using the supplied one or your own), you will need to modify the `api-url` parameter.
 
+**Directive parameters:**
+
+|  Parameter  |  Required |  Default value |  Description                                                                                                                                                                                      |
+|-------------|-----------|----------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| api-url     |  true     |                | URL to retrieve the repository list from. Can be local/remote, but this URL accepts no parameters and must return the same schema as github-repos.php.                                            |
+| scrollable  | false     | false          |   Adds scroll buttons to the top and bottom of the widget. Used in combination with list-length to scroll down a list of repos, one at a time, with a maximum repos on screen of list-length.     |
+| list-length | false     |                | Maximum number of repos to display on screen at one time. All other repos are hidden, with the exception of when scrollable is set to true and then the user can show/hide others when scrolling. |
 #### 3) Supply your Github API key to the `github-repos.php` file on the following line:
 ```php
 $temp = $cache->get_data("github-repo-list", "https://api.github.com/graphql", "API TOKEN HERE", $json_string);
